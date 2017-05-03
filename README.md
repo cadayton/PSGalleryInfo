@@ -12,4 +12,15 @@ The script extends the work of Chris Hunt.
 https://www.automatedops.com/blog/2017/04/28/bringing-the-community-forward/
 
 **Install from PowerShell Gallery**
-  Install-Script PSGalleryInfo -Scope currentuser
+
+    Install-Script PSGalleryInfo -Scope currentuser
+
+**Example**
+
+    PSGalleryInfo
+
+Displays the top 100 downloaded modules from the PowerShell Gallery.
+
+For other examples.
+
+    Get-Help PSGalleryInfo -full
