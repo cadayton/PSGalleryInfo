@@ -19,7 +19,7 @@ https://www.automatedops.com/blog/2017/04/28/bringing-the-community-forward/
 
     PSGalleryInfo
 
-Displays the top 100 downloaded modules from the PowerShell Gallery.
+Displays the top 100 downloaded modules from the PowerShell Gallery, PSGallery.
 
 For other examples.
 
