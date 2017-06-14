@@ -18,12 +18,14 @@
 
 <#
   .SYNOPSIS
-    Display and search for top downloaded modules or scripts in PowerShell Gallery.
+    Display and search for top downloaded modules or scripts in PowerShell Gallery, PSGallery
     By default, MicroSoft Corporation and PowerShell DSC authors are excluded.
 
   .DESCRIPTION
-    Display and search for top downloaded modules or scripts from the PowerShell Gallery.
+    Display and search for top downloaded modules or scripts from the PowerShell Gallery, PSGallery
     By default, MicroSoft Corporation and PowerShell DSC author are excluded.
+
+    Optionally, one can specific a different registered repository name.
 
     Output is displayed in a Out-GridView and selection of an entry will display the module's
     or script's project web page, if one exists.
@@ -49,6 +51,10 @@
   .PARAMETER matchDesc
     String value to display specific modules or scripts matching the Description property.
 
+  .PARAMETER repository
+    String value to specific a specific registered PowerShell gallery.  The default PowerShell is
+    PSGallery.
+
   .INPUTS
     ScriptRepo.xml or ModuleRepo.xml depending on age of the file.
 
@@ -68,11 +74,19 @@
   .EXAMPLE
     PSGalleryInfo -All
 
-    Displays the top 100 downloaded modules without any exclusions.
+    Displays the top 100 downloaded modules from PSGallery without any exclusions.
 
     On the Out-GridView dialog select an entry and click on the "OK" button
     to display the module's project home page.  Or click on the "Cancel" button
     to exit.
+
+  .EXAMPLE
+    PSGalleryInfo -repository MyGallery
+
+    Same as the prior example, but specifies a private PowerShell repository named, MyGallery.
+
+    See the following URL on how to create your own internal PowerShell repository.
+    https://kevinmarquette.github.io/2017-05-30-Powershell-your-first-PSScript-repository/?utm_source=rss&utm_medium=blog&utm_content=rss
 
   .EXAMPLE
     PSGalleryInfo -script -all
@@ -122,8 +136,13 @@
         HelpMessage = "Display the pick history of all games",
         ValueFromPipeline=$True)]
         [ValidateNotNullorEmpty()]
-        [string]$matchDesc
-
+        [string]$matchDesc,
+      [Parameter(Position=5,
+        Mandatory=$false,
+        HelpMessage = "Specify a repository name",
+        ValueFromPipeline=$True)]
+        [ValidateNotNullorEmpty()]
+        [string]$repository = "PSGallery"
    )
 #
 
@@ -131,8 +150,8 @@
 
   #Import-Module BurntToast;
   $sPath          = Get-Location;
-  $ScriptRepoFile = "$sPath\ScriptRepo.xml";
-  $ModuleRepoFile = "$sPath\ModuleRepo.xml";
+  $ScriptRepoFile = "$sPath\ScriptRepo-$repository.xml";
+  $ModuleRepoFile = "$sPath\ModuleRepo-$repository.xml";
 
 #
 
@@ -166,8 +185,8 @@
       $codetype = "scripts";
       $modules = Get-XMLFile $ScriptRepoFile
       if ($modules -is [Object]) { } else {
-        Write-Progress -Activity "Loading script data from PowerShell Gallery ..." -Status "Please wait"
-        $modules = Find-Script -Repository PSGallery
+        Write-Progress -Activity "Loading script data from PowerShell Gallery $repository..." -Status "Please wait"
+        $modules = Find-Script -Repository $repository
         Write-Progress -Activity "Done" -Completed;
         $modules | Export-CliXML -Path $ScriptRepoFile
       }   
@@ -175,8 +194,8 @@
       $codetype = "modules"
       $modules = Get-XMLFile $ModuleRepoFile
       if ($modules -is [Object]) { } else {
-        Write-Progress -Activity "Loading module data from PowerShell Gallery ..." -Status "Please wait"
-        $modules = Find-Module -Repository PSGallery
+        Write-Progress -Activity "Loading module data from PowerShell Gallery $repository..." -Status "Please wait"
+        $modules = Find-Module -Repository $repository
         Write-Progress -Activity "Done" -Completed;
         $modules | Export-CliXML -Path $ModuleRepoFile
       }
