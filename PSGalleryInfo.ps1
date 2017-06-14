@@ -1,6 +1,6 @@
 <#PSScriptInfo
 
-  .VERSION 1.0.0
+  .VERSION 1.1.0
   .GUID 0fd916fe-3a0d-48c4-a196-18ea085e071f
   .AUTHOR Craig Dayton
   .COMPANYNAME Example.com
